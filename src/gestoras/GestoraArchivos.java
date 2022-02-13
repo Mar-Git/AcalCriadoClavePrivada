@@ -4,8 +4,10 @@ import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 
 public class GestoraArchivos {
 
@@ -57,16 +59,22 @@ public class GestoraArchivos {
     }
 
     private Cipher getCipher(String algoritmo, byte[] valorClave, int encryptMode) throws NoSuchAlgorithmException, InvalidKeySpecException, NoSuchPaddingException, InvalidKeyException {
-        SecretKeySpec keySpec = new SecretKeySpec(valorClave, algoritmo);
-        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(algoritmo);
-        SecretKey clave = keyFactory.generateSecret(keySpec);
+        SecretKeySpec keySpec =null;
+        SecretKey clave;
+        MessageDigest sha = null;
         Cipher encriptador;
-        if (algoritmo.equals("AES"))
-            encriptador = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        else{
-            encriptador = Cipher.getInstance(algoritmo);
+        encriptador = Cipher.getInstance(algoritmo);
+        if (algoritmo.equals("AES")){
+            sha = MessageDigest.getInstance("SHA-1");
+            valorClave = sha.digest(valorClave);
+            valorClave = Arrays.copyOf(valorClave, 16);
+            clave= new SecretKeySpec(valorClave,algoritmo);
         }
-
+        else{
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(algoritmo);
+            clave = keyFactory.generateSecret(keySpec);
+        }
+        keySpec = new SecretKeySpec(valorClave, algoritmo);
         encriptador.init(encryptMode, clave);
         return encriptador;
     }
