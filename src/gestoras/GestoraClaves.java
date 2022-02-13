@@ -27,7 +27,7 @@ public class GestoraClaves {
                 e.printStackTrace();
             }
         } catch (NoSuchAlgorithmException e) {
-            System.out.println("Algoritmo de generación de claves no soportado");
+            e.printStackTrace();
         } catch (InvalidKeySpecException e) {
             e.printStackTrace();
         }
@@ -54,7 +54,6 @@ public class GestoraClaves {
             }
             case "AES" -> {
                 SecretKeySpec keySpec= new SecretKeySpec(clave.getEncoded(), algoritmo);
-//                    PBEKeySpec keyspec = (PBEKeySpec) keySpec.getKeySpec(key, PBEKeySpec.class);
                 valorClave = keySpec.getEncoded();
             }
         }

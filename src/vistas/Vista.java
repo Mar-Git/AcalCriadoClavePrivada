@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 public class Vista {
 
-
     public static int menuPrincipal() {
         Scanner sc = new Scanner(System.in);
         int respuesta=0;
@@ -39,7 +38,6 @@ public class Vista {
         return tipoAlgoritmos[opcion-1];
     }
 
-
     public static String introNombreFicheroGuardarClave(){
         Scanner sc= new Scanner(System.in);
         System.out.println("Introduzca el nombre del fichero en el que desea guardar la clave");
@@ -69,10 +67,6 @@ public class Vista {
         System.out.println("Introduzca el nombre del fichero que desea encriptar");
         String nombreFicheroEncriptado = sc.next();
         return nombreFicheroEncriptado;
-    }
-
-    public static void mensajeAtencionUsuario() {
-        System.out.println("Debe introducir primero el algoritmo que desee utilizar");
     }
 }
 
