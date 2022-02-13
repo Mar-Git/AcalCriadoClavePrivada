@@ -2,10 +2,8 @@ package main;
 
 import gestoras.*;
 import vistas.Vista;
-import java.io.*;
 
 public class Main {
-    public static File archivoConClave;
     public static GestoraArchivos gArchivos= new GestoraArchivos();
     public static GestoraClaves gClave = new GestoraClaves();
 

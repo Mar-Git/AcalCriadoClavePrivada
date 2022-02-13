@@ -60,7 +60,13 @@ public class GestoraArchivos {
         SecretKeySpec keySpec = new SecretKeySpec(valorClave, algoritmo);
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(algoritmo);
         SecretKey clave = keyFactory.generateSecret(keySpec);
-        Cipher encriptador = Cipher.getInstance(algoritmo);
+        Cipher encriptador;
+        if (algoritmo.equals("AES"))
+            encriptador = Cipher.getInstance("AES/CBC/PKCS5Padding");
+        else{
+            encriptador = Cipher.getInstance(algoritmo);
+        }
+
         encriptador.init(encryptMode, clave);
         return encriptador;
     }

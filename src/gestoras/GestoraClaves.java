@@ -3,6 +3,7 @@ package gestoras;
 import javax.crypto.*;
 import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -15,7 +16,10 @@ public class GestoraClaves {
         try {
             SecretKey clave = getSecretKey(algoritmo);
             System.out.printf("Formato de clave: %s\n", clave.getFormat());
-            SecretKeyFactory keySpecFactory = SecretKeyFactory.getInstance(algoritmo);
+            SecretKeyFactory keySpecFactory=null;
+            if(algoritmo!="AES") {
+                keySpecFactory = SecretKeyFactory.getInstance(algoritmo);
+            }
             byte[] valorClave = getBytes(nombreArchivoSalida, algoritmo, clave, keySpecFactory);
             try (FileOutputStream fos = new FileOutputStream(nombreArchivoSalida)) {
                 fos.write(valorClave);
@@ -29,7 +33,7 @@ public class GestoraClaves {
         }
     }
 
-    private SecretKey getSecretKey(String algoritmo) throws NoSuchAlgorithmException {
+    public SecretKey getSecretKey(String algoritmo) throws NoSuchAlgorithmException {
         KeyGenerator genClaves = KeyGenerator.getInstance(algoritmo);
         SecureRandom srand = SecureRandom.getInstance(ALGORITMO_GEN_NUM_ALEAT);
         genClaves.init(srand);
@@ -49,7 +53,9 @@ public class GestoraClaves {
                 valorClave = keySpec.getKey();
             }
             case "AES" -> {
-                System.out.println("En construcción");
+                SecretKeySpec keySpec= new SecretKeySpec(clave.getEncoded(), algoritmo);
+//                    PBEKeySpec keyspec = (PBEKeySpec) keySpec.getKeySpec(key, PBEKeySpec.class);
+                valorClave = keySpec.getEncoded();
             }
         }
         System.out.printf("Longitud de clave: %d bits\n", valorClave.length * 8);
