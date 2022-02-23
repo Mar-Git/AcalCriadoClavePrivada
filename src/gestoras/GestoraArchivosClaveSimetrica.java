@@ -9,7 +9,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
 
-public class GestoraArchivos {
+public class GestoraArchivosClaveSimetrica {
 
     private final String TYPE_FILE_ENCRYPT= ".encript";
     private final String TYPE_FILE_DESENCRYPT= ".desencript";

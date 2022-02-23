@@ -4,8 +4,8 @@ import gestoras.*;
 import vistas.Vista;
 
 public class Main {
-    public static GestoraArchivos gArchivos= new GestoraArchivos();
-    public static GestoraClaves gClave = new GestoraClaves();
+    public static GestoraArchivosClaveSimetrica gArchivos= new GestoraArchivosClaveSimetrica();
+    public static GestoraClavesSimetricas gClave = new GestoraClavesSimetricas();
 
     public static void main(String[] args) {
         String algoritmo="";
@@ -17,7 +17,7 @@ public class Main {
                 case 1 -> {
                     algoritmo = Vista.elegirOpcionAlgoritmo();
                     ficheroClave = Vista.introNombreFicheroGuardarClave();
-                    gClave.generarArchivoClave(ficheroClave, algoritmo);
+                    gClave.generarArchivoClavePrivada(ficheroClave, algoritmo);
                 }
                 case 2 -> {
                     if (algoritmo == "") {

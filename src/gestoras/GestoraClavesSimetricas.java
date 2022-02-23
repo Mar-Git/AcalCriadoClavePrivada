@@ -1,7 +1,6 @@
 package gestoras;
 
 import javax.crypto.*;
-import javax.crypto.spec.DESKeySpec;
 import javax.crypto.spec.DESedeKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
@@ -9,10 +8,10 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 
-public class GestoraClaves {
+public class GestoraClavesSimetricas {
     private static final String ALGORITMO_GEN_NUM_ALEAT = "SHA1PRNG";
 
-    public void generarArchivoClave(String nombreArchivoSalida, String algoritmo) {
+    public void generarArchivoClavePrivada(String nombreArchivoSalida, String algoritmo) {
         try {
             SecretKey clave = getSecretKey(algoritmo);
             System.out.printf("Formato de clave: %s\n", clave.getFormat());
@@ -21,11 +20,7 @@ public class GestoraClaves {
                 keySpecFactory = SecretKeyFactory.getInstance(algoritmo);
             }
             byte[] valorClave = getBytes(nombreArchivoSalida, algoritmo, clave, keySpecFactory);
-            try (FileOutputStream fos = new FileOutputStream(nombreArchivoSalida)) {
-                fos.write(valorClave);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            escribirValorClaveEnFichero(nombreArchivoSalida, valorClave);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         } catch (InvalidKeySpecException e) {
@@ -33,7 +28,15 @@ public class GestoraClaves {
         }
     }
 
-    public SecretKey getSecretKey(String algoritmo) throws NoSuchAlgorithmException {
+    private void escribirValorClaveEnFichero(String nombreArchivoSalida, byte[] valorClave) {
+        try (FileOutputStream fos = new FileOutputStream(nombreArchivoSalida)) {
+            fos.write(valorClave);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private SecretKey getSecretKey(String algoritmo) throws NoSuchAlgorithmException {
         KeyGenerator genClaves = KeyGenerator.getInstance(algoritmo);
         SecureRandom srand = SecureRandom.getInstance(ALGORITMO_GEN_NUM_ALEAT);
         genClaves.init(srand);
@@ -44,14 +47,8 @@ public class GestoraClaves {
     private byte[] getBytes(String nombreArchivoSalida, String algoritmo, SecretKey clave, SecretKeyFactory keySpecFactory) throws InvalidKeySpecException {
         byte[] valorClave = null;
         switch (algoritmo) {
-            case "DESede" -> {
-                DESedeKeySpec keySpec = (DESedeKeySpec) keySpecFactory.getKeySpec(clave, DESedeKeySpec.class);
-                valorClave = keySpec.getKey();
-            }
-            case "DES" -> {
-                DESKeySpec keySpec = (DESKeySpec) keySpecFactory.getKeySpec(clave, DESKeySpec.class);
-                valorClave = keySpec.getKey();
-            }
+            case "DESede"  -> valorClave = getValorClave(clave, keySpecFactory);
+            case "DES" -> valorClave = getValorClave(clave, keySpecFactory);
             case "AES" -> {
                 SecretKeySpec keySpec= new SecretKeySpec(clave.getEncoded(), algoritmo);
                 valorClave = keySpec.getEncoded();
@@ -60,6 +57,13 @@ public class GestoraClaves {
         System.out.printf("Longitud de clave: %d bits\n", valorClave.length * 8);
         System.out.printf("Valor de la clave: [%s] en fichero %s\n",
                 valorHexadecimal(valorClave), nombreArchivoSalida);
+        return valorClave;
+    }
+
+    private byte[] getValorClave(SecretKey clave, SecretKeyFactory keySpecFactory) throws InvalidKeySpecException {
+        byte[] valorClave;
+        DESedeKeySpec keySpec = (DESedeKeySpec) keySpecFactory.getKeySpec(clave, DESedeKeySpec.class);
+        valorClave = keySpec.getKey();
         return valorClave;
     }
 
