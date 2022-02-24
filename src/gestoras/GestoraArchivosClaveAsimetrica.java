@@ -129,8 +129,8 @@ public class GestoraArchivosClaveAsimetrica {
             PrivateKey clavePrivada = keyFactory.generatePrivate(privateKeySpec);
 
             //byte[] textoCifrado=cadenaEnClaro.getBytes("UTF-8");
-            //byte[] mensajeCifrado = Base64.getDecoder().decode(cadenaCifrada);
-            byte[] mensajeCifrado=cadenaCifrada.getBytes();
+            byte[] mensajeCifrado = Base64.getDecoder().decode(cadenaCifrada);
+            //byte[] mensajeCifrado=cadenaCifrada.getBytes();
             Cipher cifrado = Cipher.getInstance(ALGORITMO_CLAVE_PUBLICA);
             cifrado.init(Cipher.DECRYPT_MODE, clavePrivada);
 
