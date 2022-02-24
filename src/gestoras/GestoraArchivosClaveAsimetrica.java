@@ -19,7 +19,7 @@ public class GestoraArchivosClaveAsimetrica {
     private final String TYPE_FILE_DESENCRYPT= ".desencript";
 
 
-    public void encriptarMensajeRSA(String nombreFicheroEntrada, String nombreFicheroSalida, String nombreFichConClave) {
+    public void encriptarMensajeRSA(String nombreFicheroEntrada, String nombreFicheroSalida) {
         String cadenaEnClaro="";
         byte clavePubCodif[];
         try (BufferedReader br = new BufferedReader(new FileReader(nombreFicheroEntrada))) {
@@ -93,6 +93,23 @@ public class GestoraArchivosClaveAsimetrica {
     }
 
     public void desencriptadoRSA(String nombreFicheroEntrada, String nombreFicheroSalida, String nombreFichConClavePrivada){
+        String cadenaCifrada="";
+        try (BufferedReader br = new BufferedReader(new FileReader(nombreFicheroEntrada))) {
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            cadenaCifrada = sb.toString();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         byte[] clavePrivCodif;
         try (FileInputStream fisClavePriv = new FileInputStream(nombreFichConClavePrivada)) {
             clavePrivCodif = fisClavePriv.readAllBytes();
@@ -103,7 +120,7 @@ public class GestoraArchivosClaveAsimetrica {
             System.out.printf("ERROR: de E/S leyendo clave de fichero %s\n.", nombreFichConClavePrivada);
             return;
         }
-//TODO falta la parte de coger el mensaje encriptado del fichero de entrada
+
         KeyFactory keyFactory;
         try {
 
@@ -111,9 +128,9 @@ public class GestoraArchivosClaveAsimetrica {
             PKCS8EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(clavePrivCodif);
             PrivateKey clavePrivada = keyFactory.generatePrivate(privateKeySpec);
 
-            byte[] textoCifrado=null;
-            byte[] mensajeCifrado = Base64.getDecoder().decode(textoCifrado);
-
+            //byte[] textoCifrado=cadenaEnClaro.getBytes("UTF-8");
+            //byte[] mensajeCifrado = Base64.getDecoder().decode(cadenaCifrada);
+            byte[] mensajeCifrado=cadenaCifrada.getBytes();
             Cipher cifrado = Cipher.getInstance(ALGORITMO_CLAVE_PUBLICA);
             cifrado.init(Cipher.DECRYPT_MODE, clavePrivada);
 
