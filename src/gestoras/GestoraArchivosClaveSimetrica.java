@@ -72,9 +72,10 @@ public class GestoraArchivosClaveSimetrica {
         }
         else{
             SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(algoritmo);
+            keySpec = new SecretKeySpec(valorClave, algoritmo);
             clave = keyFactory.generateSecret(keySpec);
         }
-        keySpec = new SecretKeySpec(valorClave, algoritmo);
+        //keySpec = new SecretKeySpec(valorClave, algoritmo);
         encriptador.init(encryptMode, clave);
         return encriptador;
     }
