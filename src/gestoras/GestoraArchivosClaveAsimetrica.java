@@ -100,7 +100,6 @@ public class GestoraArchivosClaveAsimetrica {
 
             while (line != null) {
                 sb.append(line);
-                sb.append(System.lineSeparator());
                 line = br.readLine();
             }
             cadenaCifrada = sb.toString();
@@ -135,6 +134,7 @@ public class GestoraArchivosClaveAsimetrica {
             cifrado.init(Cipher.DECRYPT_MODE, clavePrivada);
 
             byte[] mensajeDescifrado = cifrado.doFinal(mensajeCifrado);
+
             try(FileOutputStream fos = new FileOutputStream(nombreFicheroSalida + TYPE_FILE_DESENCRYPT);
                 BufferedOutputStream os = new BufferedOutputStream(fos)) {
                 fos.write(mensajeDescifrado);
